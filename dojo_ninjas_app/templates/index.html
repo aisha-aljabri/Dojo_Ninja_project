@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <style>
+            form{
+            width: 20%;
+            height: auto;
+            margin-right: 80px;
+            display: inline-block;
+            vertical-align: top;
+            font-size: large;
+            text-align: left;
+            }
+            div:last-child form{
+                width: 100%;
+            }
+            div{
+                width: 80%;
+                border-bottom: 2px solid black;
+                margin: auto;
+                padding-top: 100px;
+                text-align: center;
+            }
+            div:last-child{
+                width: 40%;
+            }
+            ul, li{
+                text-align: left;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <div>
+            <form action="/process_dojo" method="post">
+                {% csrf_token %}
+                <h3>Add a Dojo</h3>
+                name:  <input name="name"/></br></br>
+                city:  <input name="city"/></br></br>
+                state: <input name="state"/></br></br>
+                <input type="submit" value="Add!"/>
+            </form>
+    
+            <form action="/process_ninja" method="post">
+                {% csrf_token %}
+                <h3>Add a Ninja</h3>
+                first name: <input name="first_name"/></br></br>
+                last name:  <input name="last_name"/></br></br>
+                Dojo: <select name="dojo"></br></br>
+                    {% for dojo in all_dojos %}
+                    <option value="{{ dojo.name }}">{{ dojo.name }}</option>
+                    {% endfor %}
+                    
+                </select> </br></br></br>
+                <input type="submit" value="Add!"/>
+            </form>
+        </div>
+        <div>
+            <h1>All the Dojo</h1>
+            {% for dojo in all_dojos %}
+                <form action="/delete" method="post">
+                    {% csrf_token %}
+                    <ul>Ninjas at the {{dojo.name}} Dojo - {{dojo.Ninjas.count}}
+                        <input type="hidden" name="delete" value="{{dojo.id}}" />
+		                <input type="submit" value="delete!"/>
+                    {% for ninja in all_ninjas %}
+                        {% if ninja.dojo.id == dojo.id %}
+                            <li>{{ninja.first_name}}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </form>
+            {% endfor %}
+        </div>
+        
+        
+    </body>
+</html>
